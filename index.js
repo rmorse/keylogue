@@ -3,7 +3,7 @@ import { keyCode, isWide } from './codes';
 const showAllKeyDown = false;
 
 class Keylogue {
-	constructor() {
+	constructor( initSettings ) {
 		this.addKey = this.addKey.bind( this );
 		this.keyDown = this.keyDown.bind( this );
 		this.keyUp = this.keyUp.bind( this );
@@ -14,6 +14,8 @@ class Keylogue {
 		this.addEvents = this.addEvents.bind( this );
 		this.rotateList = this.rotateList.bind( this );
 		this.showSettingsPanel = this.showSettingsPanel.bind( this );
+		this.hideSettingsPanel = this.hideSettingsPanel.bind( this );
+		this.toggleSettingsPanel = this.toggleSettingsPanel.bind( this );
 		this.onTransitionEnd = this.onTransitionEnd.bind( this );
 
 		// keeps a record of the active keys
@@ -26,20 +28,35 @@ class Keylogue {
 		this.rotateOptions = [ 'top', 'right', 'bottom', 'left' ];
 
 		this.settings = {
-			color: 'white',
-			backgroundColor: 'rgba( 0, 0, 0, 0.5)',
+			/*color: 'white',
+			backgroundColor: 'rgba( 0, 0, 0, 0.7)',
 			scale: 2.8,
-			fontScale: 2.8,
-			position: { top: '80px', left: '553px' },
+			fontScale: 2.8,*/
+			showStyles: false,
+			styles: 
+`.kl-key {
+	background-color: rgba( 0, 0, 0, 0.7);
+	color: white;
+	margin: 4px;
+	padding: 8px;
+	width: 56px;
+	height: 56px;
+	font-size: 17px;
+	line-height: 18px;
+}
+.kl-key--wide{
+	width: 110px;
+}`,
+			position: { top: '5px', left: '5px' },
 			rotateIndex: 3,
 		}
-		
+		this.settings = { ...this.settings, ...initSettings };
+
 		// Init
 		this.initContainer();
 		this.initContainerUI();
 		this.initStyles();
 		this.initSettings();
-		this.refreshKeyStyles();
 		this.addEvents();
 	}
 	// Init container CSS and append
@@ -51,8 +68,6 @@ class Keylogue {
 		this.keysList.classList.add( 'kl-container__keys-list' );
 		this.container.appendChild( this.keysList );
 
-
-		//this.container.addEventListener( 'drag', this.onDrag )
 		document.addEventListener( 'dragover', this.onDragOver )
 		this.container.addEventListener( 'dragstart', this.onDragStart );
 		this.container.addEventListener( 'dragend', this.onDragEnd );
@@ -68,8 +83,8 @@ class Keylogue {
 		// Init the button
 		this.settingsButton = document.createElement( 'button' );
 		this.settingsButton.classList.add( 'kl-container__settings-button' );
-		this.settingsButton.appendChild( document.createTextNode( "Settings" ) );
-		this.settingsButton.addEventListener( 'click', this.showSettingsPanel );
+		this.settingsButton.appendChild( document.createTextNode( "Styles" ) );
+		this.settingsButton.addEventListener( 'click', this.toggleSettingsPanel );
 		this.containerUI.appendChild( this.settingsButton );
 
 		// Add a rotate option
@@ -87,24 +102,35 @@ class Keylogue {
 		this.containerUI.appendChild( this.dragHandle );
 
 	}
+	toggleSettingsPanel() {
+		if ( this.settingsPanel.style.display === 'block' ) {
+			this.hideSettingsPanel();
+		} else {
+			this.showSettingsPanel();
+		}
+	}
+	showSettingsPanel() {
+		this.settings.showStyles = true;
+		this.settingsPanel.style.display = 'block';
+	}
+	hideSettingsPanel() {
+		this.settings.showStyles = false;
+		this.settingsPanel.style.display = 'none';
+	}
 	rotateList() {
 		this.settings.rotateIndex++;
 		if ( this.settings.rotateIndex >= this.rotateOptions.length ) {
 			this.settings.rotateIndex = 0;
 		}
 		this.refreshStyles();
-		console.log("updating rotation: ", this.settings.rotateIndex );
 	}
 	getRotation() {
 		return this.rotateOptions[ this.settings.rotateIndex ];
 	}
 	onDrag( e ) {
-		console.log("on drag", { x: e.clientX, y: e.clientY } );
-		//this.container.style.top = e.clientY + 'px';
-		//this.container.style.left = e.clientX + 'px';
+
 	}
 	onDragStart( e ) {
-		//e.dataTransfer.dropEffect = "move";
 		// Hide the drag element, because we'll be moving the source div directlly
 		const dragElement = document.createElement( 'div' ); 
 		e.dataTransfer.setDragImage( dragElement, 0, 0);
@@ -113,10 +139,6 @@ class Keylogue {
 		this.drag.offsetY = e.offsetY;
 		this.container.classList.add( 'kl-container--dragging' );
 
-		console.log("on drag start", e, { x: e.clientX, y: e.clientY } );
-		console.log(this);
-		//this.container.style.top = e.clientY + 'px';
-		//this.container.style.left = e.clientX + 'px';
 	}
 	onDragEnd( e ) {
 		this.drag.isDragging = false;
@@ -131,8 +153,6 @@ class Keylogue {
 			this.container.style.top =  ( parseInt( e.clientY ) - offsetY ) + 'px';
 			this.container.style.left = ( parseInt( e.clientX) - offsetX ) + 'px';
 		}
-		// e.dataTransfer.dropEffect = "move";
-		// console.log("on drag", { x: e.pageX, y: e.pageY } );
 	}
 	// Init the settings panel
 	initSettings() {
@@ -142,54 +162,39 @@ class Keylogue {
 
 		// add heading
 		const row = this.getSettingRow();
-		row.appendChild( document.createTextNode( "Settings" ) );
+		row.appendChild( document.createTextNode( "CSS Styles" ) );
 		row.classList.add( 'kl-row__heading' )
 		this.settingsPanel.append( row );
 
-		const settings = [
-			{
-				type: 'number',
-				name: 'scale',
-				label: 'Scale',
-				value: this.settings.scale,
-			},
-			{
-				type: 'number',
-				name: 'fontScale',
-				label: 'Font Scale',
-				value: this.settings.fontScale
-			},
-			{
-				type: 'text',
-				name: 'color',
-				label: 'Color',
-				value: this.settings.color,
-			},
-			{
-				type: 'text',
-				name: 'backgroundColor',
-				label: 'Background Color',
-				value: this.settings.backgroundColor,
-			}
-		];
-		
-		console.log("INIT SETTINGS: ", this.settings, settings);
+		// add CSS box
+		const cssRow = this.getSettingRow();
+		const stylesTextArea = document.createElement( 'textarea' );
 		const parent = this;
-		settings.forEach( ( setting ) => {
-			this.addSetting( setting, ( value ) => {
-				parent.onUpdateSetting( setting.name, value );
-			} );
+		stylesTextArea.addEventListener( 'input', ( e ) => {
+			const value = e.target.value;
+			parent.settings.styles = value;
+			parent.refreshStyles();
 		} );
+		stylesTextArea.value = this.settings.styles;
+		cssRow.appendChild( stylesTextArea );
+		cssRow.classList.add( 'kl-row__styles' )
+		this.settingsPanel.append( cssRow );
+		
+
+		// Init the close button
+		const closeButtonRow = this.getSettingRow();
+		closeButtonRow.style.flexDirection = 'row-reverse';
+		const closeButton = document.createElement( 'button' );
+		closeButton.classList.add( 'kl-container__settings-button' );
+		closeButton.style.margin = 0;
+		closeButton.appendChild( document.createTextNode( "Close" ) );
+		closeButton.addEventListener( 'click', this.hideSettingsPanel );
+		closeButtonRow.append( closeButton );
+		this.settingsPanel.append( closeButtonRow );
 	}
 	onUpdateSetting( settingName, settingValue ) {
 		this.settings[ settingName ] = settingValue;
-		// this.refreshStyles();
-		console.log("onUpdateSetting, ", settingName, settingValue)
-		console.log("refresh key styles")
-		this.refreshKeyStyles();
-	}
-	showSettingsPanel() {
-
+		this.refreshStyles();
 	}
 	// Init the `<style>` tags and add our animation
 	// We probably should move all CSS here, and use
@@ -200,37 +205,34 @@ class Keylogue {
 		let flexDirection = 'row';
 		if ( rotation === 'top' ) {
 			flexDirection = 'column';
-			keysPosition = `top: 80px; left: 15px;`
+			keysPosition = `top: 65px; left: 0;`
 		}
 		else if ( rotation === 'right' ) {
-
-			
 			flexDirection = 'row-reverse';
-			keysPosition = `top: 80px; right: 15px;`
-			
+			keysPosition = `top: 65px; right: 0;`
 		}
 		else if ( rotation === 'bottom' ) {
 			flexDirection = 'column-reverse';
-			keysPosition = `bottom: 80px; left: 15px;`
+			keysPosition = `bottom: 65px; left: 0;`
 		}
 		else if ( rotation === 'left' ) {
 			flexDirection = 'row';
-			keysPosition = `top: 80px; left: 15px;`
+			keysPosition = `top: 65px; left: 0;`
 		}
-		console.log("git fkex durectuib: " + flexDirection, rotation)
 		return `
 		.kl-container {
 			opacity: 1;
 			position: fixed;
-			/* cursor: move; */
 			z-index: 2000;
-			top: 80px;
-			left: 553px;
+			top: ${ this.settings.position.top };
+			left: ${ this.settings.position.top };
 			border-radius: 10px;
-			padding: 15px;
 			color: white;
 			display: inline-flex;
 			flex-direction: column;
+		}
+		.kl-container * {
+			box-sizing: border-box;
 		}
 		.kl-container__keys-list {
 			display: inline-flex;
@@ -249,7 +251,6 @@ class Keylogue {
 			flex-direction: row;
 			padding: 10px;
 			border-radius: 10px;
-			margin-left: -10px;
 
 			transition-property: opacity;
 			transition-duration: 0.15s;
@@ -269,10 +270,18 @@ class Keylogue {
 			text-shadow: rgba( 0, 0, 0, 0.8 ) 0px 0 6px;
 			font-size: 13px;
 			line-height: 13px;
+
+			transition-property: all;
+			transition-duration: 0.15s;
+			transition-timing-function: ease-in;
+
+		}
+		.kl-container__settings-button:hover, .kl-container__rotate-button:hover {
+			background-color: rgba( 150, 143, 252, 0.5 );
 		}
 		.kl-container__settings-button, .kl-container__rotate-button {
 			border-radius: 5px;
-			background-color: #968ffc;
+			background-color: rgba( 150, 143, 252, 1 );
 			cursor: pointer;
 		}
 		.kl-container__drag-handle {
@@ -285,20 +294,22 @@ class Keylogue {
 		}
 		.kl-container:hover .kl-container__ui,
 		.kl-container--dragging .kl-container__ui {
-			/* backdrop-filter: blur( 13.0px );
-			-webkit-backdrop-filter: blur( 13.0px ); */
+			background-color: rgba( 0, 0, 0, 0.7 );
 			opacity: 1;
 		}
 		.kl-settings {
 			margin: 10px auto;
-			height: 300px;
-			width: 600px;
+			width: 500px;
 			overflow-y: auto;
 			padding: 20px;
-			background: rgba(60, 60, 60, 0.7);
-			border-radius: 3px;
+			background-color: rgba( 0, 0, 0, 0.7 );
+			border-radius: 10px;
 			color: #fff;
-			z-index: 2000;
+			z-index: 2001;
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			display: none;
 		}
 		.kl-settings:hover {
 			opacity: 1;
@@ -317,6 +328,14 @@ class Keylogue {
 			flex-direction: row;
 			display: flex;
 			/* padding: 5px 0; */
+		}
+		
+		.kl-settings .kl-row textarea {
+			padding: 10px;
+			font-size: 16px;
+			margin: 10px 0;
+			width: 100%;
+			min-height: 400px;
 		}
 		.kl-row__heading {
 			font-size: 14px;
@@ -338,7 +357,7 @@ class Keylogue {
 			opacity: 0;
 		}
 
-	`;
+	` + this.getKeyStyles();
 	}
 	initStyles() {
 		this.styleElement = document.createElement('style');
@@ -349,42 +368,27 @@ class Keylogue {
 	refreshStyles() {
 		this.styleElement.replaceChildren( document.createTextNode( this.getStyles() ) );
 	}
-	getSizeCss( scale, fontScale ) {
-		const fontSize = 6 * ( fontScale ? fontScale : scale );
-		const sizeCss = `
-			margin: ${ scale * 1.2 }px;
-			padding: ${ scale * 3 }px;
-			width: ${ 20 * scale}px;
-			height: ${ 20 * scale}px;
-			font-size: ${ fontSize }px;
-			line-height: ${ fontSize + ( fontSize * 0.1 ) }px;
-		`;
-		return sizeCss;
-	}
-
 	getKeyStyles() {
 		return `
-			display: flex;
-			flex-grow: 0;
-			flex-shrink: 0;
-			align-content: center;
-			align-items: center;
-			text-align: center;
-			border-radius: 10px;
-			background-color: ${ this.settings.backgroundColor };
-			color: ${ this.settings.color };
-			align-items: center;
-			justify-content: center;
-			text-transform: capitalize;
-		`;
+			.kl-key {
+				display: flex;
+				flex-grow: 0;
+				flex-shrink: 0;
+				align-content: center;
+				align-items: center;
+				text-align: center;
+				border-radius: 10px;
+				align-items: center;
+				justify-content: center;
+				text-transform: capitalize;
+			}
+		` + this.getKeyUserStyles();
+	}
 
-	}
-	refreshKeyStyles() {
-		console.log("refresh key styles: ")
-		this.wideWidth = `${ this.settings.scale * 40 }px`;
-		this.keyStyles = this.getKeyStyles() + this.getSizeCss( this.settings.scale );
-	}
-	
+	getKeyUserStyles() {
+		return this.settings.styles;
+
+	}	
 	addEvents() {
 		// Key up / down
 		document.addEventListener('keydown', this.keyDown );
@@ -445,10 +449,10 @@ class Keylogue {
 	// the dom element and if it is scheduled to be removed
 	createKeyObject( which ) {
 		const keyEl = document.createElement( 'div' );
-		keyEl.style.cssText = this.keyStyles;
+		keyEl.classList.add( 'kl-key' )
 		const keyName = keyCode( which );
 		if ( isWide( keyName ) ) {
-			keyEl.style.width = this.wideWidth;
+			keyEl.classList.add( 'kl-key--wide' )
 		}
 
 		keyEl.textContent = keyName ? keyName : '';
@@ -538,10 +542,19 @@ class Keylogue {
 	}
 }
 
-const init = () => {
-	const keyLog = new Keylogue();
-	// setup styles
+const init = ( initSettings = {} ) => {
+	
+	const keyLog = new Keylogue( initSettings );
 }
 
-window.addEventListener( 'DOMContentLoaded', init );
+const settings = {
 
+	
+}
+if ( document.readyState !== 'loading' ) {
+    init();
+} else {
+	window.addEventListener( 'DOMContentLoaded', ( event ) => {
+		init();
+	} );
+}
