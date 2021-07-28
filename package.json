@@ -1,0 +1,24 @@
+{
+  "name": "keylogue",
+  "version": "0.0.1",
+  "description": "Customisable on screen display of keydown and key up events.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmorse/keylogue.git"
+  },
+  "keywords": [
+    "keyup",
+    "keydown",
+    "display"
+  ],
+  "author": "Ross Morsali",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rmorse/keylogue/issues"
+  },
+  "homepage": "https://github.com/rmorse/keylogue#readme"
+}
