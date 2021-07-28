@@ -1,14 +1,13 @@
 # Keylogue
 A customisable on screen display of `keyup` and `keydown` events - available in any page and browser via a bookmarklet.
 
-## Demo + The bookmarklet
+## Demo + bookmarklet
 
-Github won't allow us to embed the bookmarklet here - because that means we would be able to execute scripts on this site (which would be insecure!)
+Github won't allow us to embed the bookmarklet here (probably security...)
 
-So [save and open this html](/bookmarklet/index.html) file to access the bookmarklet or you can grab it from this post:
+View the demo and grab the save bookmarklet here:
 
-*Link:* https://rmorse.github.io/keylogue/
-
+https://rmorse.github.io/keylogue/
 
 
 ## How to use a bookmarklet?
