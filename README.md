@@ -2,10 +2,7 @@
 A customisable on screen display of `keyup` and `keydown` events - available in any page and browser via a bookmarklet.
 
 ## Demo + bookmarklet
-
-Github won't allow us to embed the bookmarklet here (probably security...)
-
-View the demo and grab the save bookmarklet here:
+View the demo and grab the bookmarklet here:
 
 https://rmorse.github.io/keylogue/
 
