@@ -10,7 +10,7 @@ https://rmorse.github.io/keylogue/
 ## Features
 
 ### Works on any site
-Bookmarklets live in your browser, so you can access them when visiting any site or project your are working on.
+Bookmarklets live in your browser, so you can access them when visiting any site or project you are working on.
 
 ### Displays keys pressed
 Keys pressed will display in order and fade away
