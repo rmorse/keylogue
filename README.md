@@ -19,13 +19,13 @@ Bookmarklets live in your browser, so you can access them when visiting any site
 Keys pressed will display in order and fade away
 
 ### Position anywhere
-Hover over the keys to access the tool - click and drag on the keys, or the menu to reposition on screen
+Hover over the keys to access the widget - click and drag on the keys, or the popup menu to reposition on screen
 
 ### Custom styles
 Customise the keys to fit in with your project by accessing our popup styles panel (from the floating menu) - preloaded with defaults for your tinker with.
 
 ### Gets out of your way for screen recordings
-- No menus / panels will be visible unless you mouse over our UI
+No menus / panels will be visible unless you mouse over our UI
 
 
 ## Accessing the hidden menu
