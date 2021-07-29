@@ -6,8 +6,9 @@ View the demo and grab the bookmarklet here:
 
 https://rmorse.github.io/keylogue/
 
-
 ## Features
+
+https://user-images.githubusercontent.com/853547/127457044-36eb701a-7eba-4da6-b85e-3daa91ae1d3f.mp4
 
 ### Works on any site
 Bookmarklets live in your browser, so you can access them when visiting any site or project you are working on.
@@ -24,7 +25,6 @@ Customise the keys to fit in with your project by accessing our popup styles pan
 ### Gets out of your way for screen recordings
 No menus / panels will be visible unless you mouse over our UI
 
-
 ## Accessing the hidden menu
 
 Once you have activated the bookmarklet:
@@ -33,7 +33,6 @@ Once you have activated the bookmarklet:
 - Drag to move the entire widget around your screen
 - Rotate the direction of the keys and fade away
 - Open the styles panel
-
 
 ## How to use a bookmarklet?
 
